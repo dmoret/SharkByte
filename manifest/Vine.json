@@ -1,0 +1,23 @@
+{
+	"type":"dom",
+	"channel": {
+
+		"url":"https://vine.co/channels/{channel_name}" ,
+		"root":"#main-content .posts-container .post" ,
+		"username":".card .card-header .user-info-new .username span.ember-view a"
+
+	},
+	"user": {
+
+		"url"       : "https://vine.co/{user_name}",
+		"root"      : ".follow-metrics",
+		"loops"     : ".loops .metric-count" ,
+		"followers" : ".followers .metric-count" ,
+		"following" : ".following .metric-count"
+
+	},
+	"user_wall": {
+
+	}
+
+}

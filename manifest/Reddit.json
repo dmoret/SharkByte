@@ -1,0 +1,25 @@
+{	
+	"type":"api",
+	"subreddit_listing": {
+
+		"url"         : "http://www.reddit.com/subreddits/popular.json?limit=100" ,
+		"root"        : "data.children" ,
+		"slug"        : "data.display_name" ,
+		"subscribers" : "data.subscribers"
+
+	},
+	"subreddit_page": {
+
+		"url"           : "http://www.reddit.com/r/{slug}.json?limit=100",
+		"root"          : "data.children" ,
+		"author"        : "data.author" , 
+		"title"         : "data.title" ,
+		"score"         : "data.score" ,
+		"comment_count" : "data.num_comments"
+
+	},
+	"subreddit": {
+
+	}
+
+}
