@@ -14,9 +14,8 @@ function SharkByte(){
 }
 
 SharkByte.prototype.init = function( manifestDirectory ){
-var sharkbyte = this;
+	var sharkbyte = this;
 	
-	//console.log('current shark dir: '+ __dirname);
 	sharkbyte.manifestSet = [];
 	sharkbyte.looper = new Looper();
 
@@ -154,13 +153,8 @@ SharkByte.prototype.handleAPI = function(res, dataBuild, callback){
 
 SharkByte.prototype.callAPI = function( dataBuild , options , callback  ){
 	var sharkbyte = this;
-	
-	console.log('API URL: '+ dataBuild.url);
 
 	var match = dataBuild.url.match('^https?://');
-
-	console.log('URL MATCH:');
-	console.log(match);
 
 	if('https://' == match[0]){
 		console.log('using https...');
