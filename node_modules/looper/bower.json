@@ -1,0 +1,24 @@
+{
+  "name": "Looper.js",
+  "main": "index.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/mikesizz/Looper.js",
+  "authors": [
+    "mike sizz <mikeiscoding@gmail.com>"
+  ],
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "license": "GPL",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "requirejs": "2.1.16"
+  }
+}

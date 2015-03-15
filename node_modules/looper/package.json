@@ -1,0 +1,16 @@
+{
+  "name": "Looper.js",
+  "version": "0.0.1",
+  "description": "looper.js - fluid function runner",
+  "main": "Looper.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikesizz/Looper.js"
+  },
+  "author": "mike sizz <mikeiscoding@gmail.com>",
+  "license": "gpl",
+  "bugs": {
+    "url": "https://github.com/mikesizz/Looper.js/issues"
+  },
+  "homepage": "https://github.com/mikesizz/Looper.js"
+}

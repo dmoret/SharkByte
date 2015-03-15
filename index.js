@@ -1,7 +1,8 @@
 var HTTP = require('http');
+var HTTPS = require('https');
 var XRAY = require('x-ray');
 var FS = require('fs');
-var Looper = require('looper.js');
+var Looper = require('looper');
 
 module.exports = SharkByte;
 
@@ -14,7 +15,8 @@ function SharkByte(){
 
 SharkByte.prototype.init = function( manifestDirectory ){
 var sharkbyte = this;
-
+	
+	//console.log('current shark dir: '+ __dirname);
 	sharkbyte.manifestSet = [];
 	sharkbyte.looper = new Looper();
 
@@ -81,77 +83,100 @@ var sharkbyte = this;
 
 };
 
-SharkByte.prototype.callAPI = function( dataBuild , options , callback  ){
-var sharkbyte = this;
-	
-	HTTP.get( dataBuild.url , function( res ){
+SharkByte.prototype.handleAPI = function(res, dataBuild, callback){
+	var sharkbyte = this;
+	var rawData = "";
 
-		var rawData = "";
+	res.on( 'data' , function( chunk ){
 
-		res.on( 'data' , function( chunk ){
+		rawData += chunk;
 
-			rawData += chunk;
+	});
 
-		});
+	res.on( 'end' , function(){
 
-		res.on( 'end' , function(){
+		rawData = JSON.parse(rawData);
+		reduceObject( rawData , dataBuild.root , function( reduction ){
+			var collection = [];
 
-			rawData = JSON.parse(rawData);
-			reduceObject( rawData , dataBuild.root , function( reduction ){
-				var collection = [];
+			for (var i = 0; i < reduction.length; i++) {
+				
+				var paramLength = Object.keys( dataBuild ).length;
+				var paramIndex = 0;
 
-				for (var i = 0; i < reduction.length; i++) {
-					
-					var paramLength = Object.keys( dataBuild ).length;
-					var paramIndex = 0;
+				var item = {};
+        		for( var key in dataBuild ){
+        			
 
-					var item = {};
-            		for( var key in dataBuild ){
-            			
+        			if( key != "root" && key != "url" ){
 
-            			if( key != "root" && key != "url" ){
+        				reduceObject( reduction[i] , dataBuild[key] , function( reduction ){
 
-            				reduceObject( reduction[i] , dataBuild[key] , function( reduction ){
+        					item[key] = reduction;
+        					paramIndex++;
 
-            					item[key] = reduction;
-            					paramIndex++;
+        					if( paramIndex == paramLength ){
 
-            					if( paramIndex == paramLength ){
+        						collection.push( item );
 
-            						collection.push( item );
+        					}
 
-            					}
-
-            				});
+        				});
 
 
-            			}else{ 
+        			}else{ 
 
-            				paramIndex++; 
-            				if( paramIndex == paramLength ){
+        				paramIndex++; 
+        				if( paramIndex == paramLength ){
 
-            					collection.push( item );
+        					collection.push( item );
 
-            				}
+        				}
 
-            			}
+        			}
 
-            		}
+        		}
 
-            		if( i == reduction.length - 1 ){
+        		if( i == reduction.length - 1 ){
 
-            			callback( collection );
-            			sharkbyte.looper.unlock();
+        			callback( collection );
+        			sharkbyte.looper.unlock();
 
-            		}
+        		}
 
-				}
-
-			});
+			}
 
 		});
 
 	});
+
+}
+
+SharkByte.prototype.callAPI = function( dataBuild , options , callback  ){
+	var sharkbyte = this;
+	
+	console.log('API URL: '+ dataBuild.url);
+
+	var match = dataBuild.url.match('^https?://');
+
+	console.log('URL MATCH:');
+	console.log(match);
+
+	if('https://' == match[0]){
+		console.log('using https...');
+		HTTPS.get( dataBuild.url , function(res){
+			sharkbyte.handleAPI(res, dataBuild, callback);
+		});
+
+	}else{
+		console.log('using http...');
+		HTTP.get( dataBuild.url , function(res){
+			sharkbyte.handleAPI(res, dataBuild, callback);
+		});
+
+	}
+
+	
 
 }
 
@@ -200,7 +225,7 @@ var sharkbyte = this;
 };
 
 SharkByte.prototype.get = function( platform , dataType , options , callback ){
-var sharkbyte = this;
+	var sharkbyte = this;
 
 	sharkbyte.looper.addToChain(function(){
 
@@ -246,7 +271,7 @@ var sharkbyte = this;
 };
 
 SharkByte.prototype.mapOptionsToDataBuild = function( options , dataBuild , callback ){
-var sharkbyte = this;
+	var sharkbyte = this;
 
 	if( Object.keys( options ).length != 0 ){
 		
